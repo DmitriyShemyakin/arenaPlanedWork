@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Gantt Chart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Подключаем стили для библиотеки DHTMLX Gantt -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css">
+
+    <!-- Подключаем скрипты для библиотеки DHTMLX Gantt -->
+    <script src="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Подключаем jQuery -->
+</head>
+<body>
+<!-- Элементы управления -->
+<style>
+    /* Стили для кнопок и выпадающих списков */
+    .custom-button,
+    .custom-select {
+        padding: 8px 16px;
+        background-color: #fff;
+        color: #000;
+        border: 1px solid #6c757d;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease; /* Анимация при изменении цвета */
+    }
+
+    /* Стили для кнопок и выпадающих списков при наведении */
+    .custom-button:hover,
+    .custom-select:hover {
+        background-color: #e9ecef; /* Блендо-серый цвет при наведении */
+    }
+</style>
+
+<form id="updateForm" style="display: flex; align-items: center;">
+    <input type="date" id="dateInput" style="margin-top: 5px; margin-right: 5px;">
+    <button type="submit" class="custom-button" style="margin-right: 5px;">Обновить</button>
+    <button id="resetDate" type="button" class="custom-button" style="margin-right: 5px;">Сбросить</button>
+    <div style="margin-left: auto;">
+        <select id="dropdown1" class="custom-select" style="margin-right: 5px;">
+            <option value="1">Технический центр</option>
+            <option value="Асбестовский центр">Асбестовский центр</option>
+            <option value="Екатеринбургский центр">Екатеринбургский центр</option>
+            <option value="Ирбитский центр">Ирбитский центр</option>
+            <option value="Каменск-Уральский центр">Каменск-Уральский центр</option>
+            <option value="Краснотурьинский центр">Краснотурьинский центр</option>
+            <option value="Курганский центр">Курганский центр</option>
+            <option value="Нижневартовское отделение">Нижневартовское отделение</option>
+            <option value="Нижнесергинский центр">Нижнесергинский центр</option>
+            <option value="Нижнетагильский центр">Нижнетагильский центр</option>
+            <option value="Нижнетуринский центр">Нижнетуринский центр</option>
+            <option value="Новоуральское отделение">Новоуральское отделение</option>
+            <option value="Новоуренгойское отделение">Новоуренгойское отделение</option>
+            <option value="Ноябрьский центр">Ноябрьский центр</option>
+            <option value="Октябрьское отделение">Октябрьское отделение</option>
+            <option value="Салехардское отделение">Салехардское отделение</option>
+            <option value="Советское отделение">Советское отделение</option>
+            <option value="Сургутский центр">Сургутский центр</option>
+            <option value="Ханты-Мансийское отделение">Ханты-Мансийское отделение</option>
+            <!-- Остальные опции здесь -->
+        </select>
+
+        <select id="dropdown2" class="custom-select" style="margin-right: 5px;">
+            <option value="1">Направление</option>
+            <option value="ЯНАО">ЯНАО</option>
+            <option value="Ю-З">Ю-З</option>
+            <option value="С-В">С-В</option>
+            <option value="ХМАО">ХМАО</option>
+            <option value="КургО">КургО</option>
+            <!-- Остальные опции здесь -->
+        </select>
+        <button id="highType" type="button" class="custom-button">Показать только важные работы</button>
+    </div>
+</form>
+<button id="todayButton" style="float: left; margin-top: 10px;" class="custom-button">Сегодня</button>
+<button id="yesterdayButton" style="float: left; margin-top: 10px; margin-left: 5px; margin-bottom: 5px;" class="custom-button">Вчера</button>
+
+<br>
+<!-- Контейнер для диаграммы -->
+<div id="gantt-container" style="width: 100%; overflow-x: auto;">
+    <div id="gantt-chart" style="height: 600px;"></div>
+</div>
+
+<script src="/js/scripts.js"></script>
+</body>
+</html>

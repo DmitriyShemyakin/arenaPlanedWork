@@ -1,0 +1,18 @@
+/* Стили для кнопок и выпадающих списков */
+.custom-button,
+.custom-select {
+    padding: 8px 16px;
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #6c757d;
+    border-radius: 5px;
+    cursor: pointer;
+    /* Анимация при изменении цвета */
+    transition: background-color 0.3s ease;
+}
+
+/* Стили для кнопок и выпадающих списков при наведении */
+.custom-button:hover,
+.custom-select:hover {
+    background-color: #e9ecef;
+}
