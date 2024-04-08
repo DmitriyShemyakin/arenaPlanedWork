@@ -15,13 +15,10 @@ import java.util.List;
 @Controller
 public class GanttController {
 
-//    @Value("${url}")
-//    private String LINK;
-//
-//    @Value("${access}")
-//    private String ACCESS_KEY;
-
-    private static final String SERVICE_URL = "https://arena-test.motivtelecom.ru/sd/services/rest/exec-post?func=modules.gant.dataServiceCallChg&params=requestContent&accessKey=7f53b56e-8c9c-4d2a-8b99-16b4b7bbe474";
+    @Value("${url}")
+    private String LINK;
+    @Value("${access}")
+    private String ACCESS_KEY;
 
     @GetMapping("/ganttChart")
     public String index() {
@@ -33,10 +30,9 @@ public class GanttController {
     public List<ServiceResponse> update(@RequestBody UpdateRequest updateRequest) {
         // Преобразуем дату из строки в LocalDate
         LocalDate localDate = LocalDate.parse(updateRequest.getDate());
-
         // Отправляем POST запрос к сервису
         RestTemplate restTemplate = new RestTemplate();
-        ServiceResponse[] responses = restTemplate.postForObject(SERVICE_URL, createRequest(localDate, updateRequest.getDirection(), updateRequest.getCentr()), ServiceResponse[].class);
+        ServiceResponse[] responses = restTemplate.postForObject(LINK+ACCESS_KEY, createRequest(localDate, updateRequest.getDirection(), updateRequest.getCentr()), ServiceResponse[].class);
 
         return List.of(responses);
     }
