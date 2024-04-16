@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $.Values.configMap.name }}
+data:
+  application.properties: |
+    url={{ $.Values.configMap.data.application.properties.url }}
+    access={{ $.Values.configMap.data.application.properties.access }}

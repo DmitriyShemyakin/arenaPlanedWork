@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deployment.name }} # Имя деплоймента из values
+spec:
+  replicas: {{ .Values.deployment.replicas }} # Количество реплик из values
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.labels.app }} # Метка "app" из values
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.deployment.labels.app }} # Метка для пода из values
+    spec:
+      containers:
+        - name: {{ .Values.deployment.container.name }} # Имя контейнера из values
+          image: {{ .Values.deployment.container.image }} # Образ контейнера из values
+          ports:
+            - containerPort: {{ .Values.deployment.container.port }} # Порт, на котором работает приложение внутри контейнера из values
+          env:
+            - name: url # Переменная среды "url"
+              value: "{{ .Values.deployment.env.url }}" # Значение переменной среды "url" из values
+            - name: access # Переменная среды "access"
+              value: "{{ .Values.deployment.env.access }}" # Значение переменной среды "access" из values
+          volumeMounts:
+            - name: config-volume # Имя тома
+              mountPath: /app/config # Путь, куда будет примонтирован том внутри контейнера
+      volumes:
+        - name: config-volume # Имя тома
+          configMap:
+            name: {{ .Values.configMap.name }} # Имя ConfigMap, который будет использован для этого тома

@@ -1,0 +1,10 @@
+project: gantt-chart-arena
+configVersion: 1
+deploy:
+  helmRelease: gantt-chart-arena
+  namespace: cashier-{{ .Env }}
+---
+image: arena-planned-work
+dockerfile: Dockerfile
+args:
+  APP: arena-planned-work-1.0-SNAPSHOT

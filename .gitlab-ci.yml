@@ -1,0 +1,58 @@
+stages:
+  - checkcode
+  - build
+  - deploy-stage
+  - deploy-production
+  - dismiss
+  - cleanup
+
+include:
+  - project: 'itdep/ci-cd/gitlab-ci'
+    ref: werf-docker
+    file:
+      - '/before_script.yml'
+      - '/build.yml'
+      - '/deploy.yml'
+      - '/cleanup.yml'
+      - '/sonarqube.yml'
+  - project: 'itdep/ci-cd/gitlab-rules'
+    ref: main
+    file:
+      - '/rules.yml'
+
+sonarqube-check-java:
+  stage: checkcode
+  image: harbor.corp.motiv/pub/maven:3.8.7-eclipse-temurin-17-focal
+  extends:
+    - .rules_sonar_st_mr_main
+    - .sonarqube_vars
+    - .sonarqube_java
+
+build and publish:
+  stage: build
+  resource_group: build
+  extends:
+    - .rules_build
+    - .base_build
+
+deploy:staging:
+  stage: deploy-stage
+  extends:
+    - .base_deploy
+    - .rules_deploy_st_mr_only
+  variables:
+    KUBE_CONFIG: ${KUBE_CONFIG_STAG}
+  environment:
+    name: arena-integration-staging
+    url: https://${CI_PROJECT_NAME}.pacoba.corp.motiv
+
+deploy:production:
+  stage: deploy-production
+  extends:
+    - .base_deploy
+    - .rules_only_main_manual
+  variables:
+    KUBE_CONFIG: ${KUBE_CONFIG_PROD}
+  environment:
+    name: arena-integration-production
+    url: https://${CI_PROJECT_NAME}.corp.motiv

@@ -15,7 +15,7 @@ FROM openjdk:17-oraclelinux8
 
 # Определяем переменные окружения
 ENV APP_HOME=/app
-ENV APP_JAR=target/*.jar
+ENV APP_JAR="target/*.jar"
 
 # Создаем не-root пользователя для запуска приложения
 RUN useradd -m manager
@@ -33,4 +33,5 @@ RUN chown -R manager:manager $APP_HOME
 USER manager
 
 # Устанавливаем точку входа (entry point) для запуска приложения
-ENTRYPOINT ["java", "-jar", "arena_gantt.jar"]
+ENTRYPOINT ["java", "-jar", "ArenaPlannedWork-1.0-SNAPSHOT.jar"]
+

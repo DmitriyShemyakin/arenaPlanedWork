@@ -1,0 +1,78 @@
+### Переменные, которые будут установлены в переменное окружение внутри контейнера
+envs:
+  ENV:
+    _default: "staging"
+    production: "production"
+  TZ:
+    _default: "Asia/Yekaterinburg"
+  JAVA_OPTS:
+    _default: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0 -XX:MaxMetaspaceSize=100m -XX:CompressedClassSpaceSize=20m -XX:ReservedCodeCacheSize=30m -XX:MaxDirectMemorySize=5m"
+
+### Секретные переменные из переменных гитлаба, будут установлены в переменное окружение внутри контейнера
+### В переменных гитлаба переменные необходимо устанавливать в следующем фармате SENV_DB_PASS_STAGING и SENV_DB_PASS_PRODUCTION
+### префикс SENV_ - для выборки нужных переменных из всего массива переменных,
+### _PRODUCTION - для установки в определенный контур (dev, staging, production)
+
+### наименование сектрета для подключения к регистри
+imagePullSecrets: registrysecret
+
+ingress:
+  name: arena-gantt
+  domain:
+    _default: ".pacoba.corp.motiv"
+      production: ".gulsun.corp.motiv"
+  cert_manager_issuer:
+    _default: "pacoba-vault-issuer"
+    production: "gulsun-vault-issuer"
+
+service:
+  name: arena-gantt-service
+  labels:
+    app: arena-gantt
+  ports:
+    http:
+      name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  type: ClusterIP
+
+configMap:
+  name: arena-gantt-configmap
+  data:
+    application.properties: |
+      url=https://arena-test.motivtelecom.ru/sd/services/rest/exec-post?func=modules.gant.dataServiceCallChg&params=requestContent&accessKey=
+      access=7f53b56e-8c9c-4d2a-8b99-16b4b7bbe474
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arena-gantt-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arena-gantt
+  template:
+    metadata:
+      labels:
+        app: arena-gantt
+    spec:
+      containers:
+        - name: arena-gantt
+          image: arena_gantt
+          ports:
+            - containerPort: 8080
+          env:
+            - name: url
+              value: "https://arena-test.motivtelecom.ru/sd/services/rest/exec-post?func=modules.gant.dataServiceCallChg&params=requestContent&accessKey="
+            - name: access
+              value: "7f53b56e-8c9c-4d2a-8b99-16b4b7bbe474"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: arena-gantt-cm
+

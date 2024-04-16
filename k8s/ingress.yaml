@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: {{ $.Values.ingress.cert_manager_issuer | default $.Values.ingress.cert_manager_issuer._default }}
+    cert-manager.io/common-name: {{ $.Values.ingress.name }}{{ $.Values.ingress.domain | default $.Values.ingress.domain._default }}
+  name: {{ $.Release.Name }}
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ $.Values.ingress.name }}{{ $.Values.ingress.domain | default $.Values.ingress.domain._default }}
+      secretName: "{{ $.Values.ingress.name }}-tls"
+  rules:
+    - host: {{ $.Values.ingress.name }}{{ $.Values.ingress.domain | default $.Values.ingress.domain._default }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $.Release.Name }}
+                port:
+                  number: {{ $.Values.container.port }}
