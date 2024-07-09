@@ -27,27 +27,21 @@ public class GanttController {
 
     @PostMapping("/update")
     @ResponseBody
-    public List<ServiceResponse> update(@RequestBody UpdateRequest updateRequest) {
+    public List<ServiceResponse> update(@RequestBody ServiceRequest request) {
         // Преобразуем дату из строки в LocalDate
-        LocalDate localDate = LocalDate.parse(updateRequest.getDate());
+        LocalDate localDate = LocalDate.parse(request.getDays());
         // Отправляем POST запрос к сервису
         RestTemplate restTemplate = new RestTemplate();
-        ServiceResponse[] responses = restTemplate.postForObject(LINK+ACCESS_KEY, createRequest(localDate, updateRequest.getDirection(), updateRequest.getCentr()), ServiceResponse[].class);
+        ServiceResponse[] responses = restTemplate.postForObject(LINK + ACCESS_KEY, createRequest(localDate), ServiceResponse[].class);
 
         return List.of(responses);
     }
 
+
     // Метод для создания объекта запроса с дополнительными параметрами
-    private ServiceRequest createRequest(@NotNull LocalDate date, String direction, String centr) {
+    private ServiceRequest createRequest(@NotNull LocalDate date) {
         ServiceRequest request = new ServiceRequest();
         request.setDays(date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
-
-        if (direction != null) {
-            request.setDirection(direction);
-        }
-        if (centr != null) {
-            request.setCentr(centr);
-        }
         return request;
     }
 }

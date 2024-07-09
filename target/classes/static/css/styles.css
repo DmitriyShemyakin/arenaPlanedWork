@@ -7,12 +7,56 @@
     border: 1px solid #6c757d;
     border-radius: 5px;
     cursor: pointer;
-    /* Анимация при изменении цвета */
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease; /* Анимация при изменении цвета */
 }
 
 /* Стили для кнопок и выпадающих списков при наведении */
 .custom-button:hover,
 .custom-select:hover {
-    background-color: #e9ecef;
+    background-color: #e9ecef; /* при наведении */
 }
+.custom-button:active {
+    background-color: #757474; /* при нажатии */
+}
+/* Стили для спиннера */
+#spinner-container {
+    display: none; /* По умолчанию спиннер скрыт */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(136, 125, 125, 0.5); /* Полупрозрачный задний фон */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Устанавливаем высокий z-index для спиннера, чтобы он был поверх остального содержимого */
+}
+
+.gantt_container {
+    position: relative;
+    height: 500px;
+}
+.current-time-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: red;
+}
+.current-time-indicator {
+    position: absolute;
+    top: -5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: red;
+}
+.current-time-label {
+    position: absolute;
+    top: -20px;
+    left: 5px;
+    font-size: 12px;
+    color: red;
+}
+

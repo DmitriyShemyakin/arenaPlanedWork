@@ -11,7 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ServiceRequest {
     private String days;
-    private String direction;
-    private String centr;
 }
 

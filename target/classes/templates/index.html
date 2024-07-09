@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Подключаем стили для библиотеки DHTMLX Gantt -->
     <link rel="stylesheet" type="text/css" href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css">
+    <!-- Подключаем внешний CSS файл для стилей -->
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
 
     <!-- Подключаем скрипты для библиотеки DHTMLX Gantt -->
     <script src="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.js"></script>
@@ -13,33 +15,20 @@
 </head>
 <body>
 <!-- Элементы управления -->
-<style>
-    /* Стили для кнопок и выпадающих списков */
-    .custom-button,
-    .custom-select {
-        padding: 8px 16px;
-        background-color: #fff;
-        color: #000;
-        border: 1px solid #6c757d;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease; /* Анимация при изменении цвета */
-    }
-
-    /* Стили для кнопок и выпадающих списков при наведении */
-    .custom-button:hover,
-    .custom-select:hover {
-        background-color: #e9ecef; /* Блендо-серый цвет при наведении */
-    }
-</style>
-
 <form id="updateForm" style="display: flex; align-items: center;">
-    <input type="date" id="dateInput" style="margin-top: 5px; margin-right: 5px;">
-    <button type="submit" class="custom-button" style="margin-right: 5px;">Обновить</button>
-    <button id="resetDate" type="button" class="custom-button" style="margin-right: 5px;">Сбросить</button>
-    <div style="margin-left: auto;">
+
+    <div style="margin-right: auto; margin-top: 5px;">
+        <input type="date" id="dateInput" style="margin-top: 5px; margin-right: 5px; height: 28px; font-size: 16px; border-radius: 5px; border: 1px solid #6c757d">
+<!--        <button type="submit" class="custom-button" style="margin-right: 5px;">Обновить</button>-->
+        <button id="todayButton" class="custom-button" style="margin-right: 5px;">Сегодня</button>
+        <button id="yesterdayButton" class="custom-button" style="margin-right: 5px;">Вчера</button>
+
+    </div>
+
+    <div style="margin-left: auto; margin-top: 5px;">
+        <label for="dropdown1">Выберите центры:</label>
         <select id="dropdown1" class="custom-select" style="margin-right: 5px;">
-            <option value="1">Технический центр</option>
+            <option value="1">Все центра</option>
             <option value="Асбестовский центр">Асбестовский центр</option>
             <option value="Екатеринбургский центр">Екатеринбургский центр</option>
             <option value="Ирбитский центр">Ирбитский центр</option>
@@ -61,8 +50,9 @@
             <!-- Остальные опции здесь -->
         </select>
 
+        <label for="dropdown2">Выберите направление:</label>
         <select id="dropdown2" class="custom-select" style="margin-right: 5px;">
-            <option value="1">Направление</option>
+            <option value="1">Все направления</option>
             <option value="ЯНАО">ЯНАО</option>
             <option value="Ю-З">Ю-З</option>
             <option value="С-В">С-В</option>
@@ -70,18 +60,54 @@
             <option value="КургО">КургО</option>
             <!-- Остальные опции здесь -->
         </select>
-        <button id="highType" type="button" class="custom-button">Показать только важные работы</button>
-    </div>
-</form>
-<button id="todayButton" style="float: left; margin-top: 10px;" class="custom-button">Сегодня</button>
-<button id="yesterdayButton" style="float: left; margin-top: 10px; margin-left: 5px; margin-bottom: 5px;" class="custom-button">Вчера</button>
 
-<br>
-<!-- Контейнер для диаграммы -->
-<div id="gantt-container" style="width: 100%; overflow-x: auto;">
-    <div id="gantt-chart" style="height: 600px;"></div>
+        <label for="dropdown3">Выберите статус задачи:</label>
+        <select id="dropdown3" class="custom-select" style="margin-right: 5px;">
+            <option value="1">Все статусы</option>
+            <option value="registered">Планирование</option>
+            <option value="verification">Верификация</option>
+            <option value="negotiation">На согласовании</option>
+            <option value="accepted">Согласован</option>
+            <option value="inprogress">В работе</option>
+            <option value="resumed">На приемке</option>
+            <option value="postponed">Отложен</option>
+            <option value="resolved">Завершен</option>
+            <option value="closed">Закрыт</option>
+            <!-- Остальные опции здесь -->
+        </select>
+
+
+    </div>
+
+</form>
+<div style="display: flex; align-items: baseline; justify-content: flex-end; margin-top: 5px">
+    <div style="border: 1px solid #6c757d; padding:  8px 16px; display: flex; align-items: center; border-radius: 5px">
+        <label for="importantTasksCheckbox" style="margin-right: 5px;">Показать только важные работы:</label>
+        <input type="checkbox" id="importantTasksCheckbox" style="transform: scale(1.5); margin-right: 10px">
+    </div>
+    <button id="resetDate" type="button" class="custom-button" style="margin-right: 5px; margin-top: 5px; margin-left: 10px">Сбросить</button>
 </div>
 
+<!-- Контейнер для диаграммы -->
+<div id="gantt-container" style="width: 100%; overflow-x: auto; margin-top: 10px">
+    <div id="gantt-chart" style="height: 600px;"></div>
+</div>
+<div style="margin-top: 5px;">
+    <label for="gridScaleSelect">Масштаб:</label>
+    <select id="gridScaleSelect" class="custom-select" style="margin-right: 5px;">
+        <option value="hour">Час</option>
+        <option value="day">День</option>
+        <option value="month">Месяц</option>
+    </select>
+</div>
+<!-- Контейнер для спиннера -->
+<div id="spinner-container">
+    <div id="spinner">
+        <img src="/img/spinner.gif" alt="Загрузка..." />
+    </div>
+</div>
+
+<!-- JavaScript скрипты -->
 <script src="/js/scripts.js"></script>
 </body>
 </html>

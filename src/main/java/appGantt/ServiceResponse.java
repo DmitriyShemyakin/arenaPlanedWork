@@ -18,5 +18,6 @@ public class ServiceResponse {
     private String state;
     private String techDirections;
     private String techCenter;
+    private String priority;
 }
 
