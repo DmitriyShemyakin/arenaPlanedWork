@@ -58,6 +58,104 @@
 
 Перейдите по адресу http://localhost:8080 для доступа к интерфейсу Gantt.
 
+## Модуль на стороне Naumen Service Desk
+
+```
+import org.hibernate.transform.AliasToEntityMapResultTransformer;
+import java.util.Calendar;
+
+//Автор: dshemyakin
+//Дата создания: 27.04.2024
+//Назначение:
+/**
+ * Бекенд для встроенного приложения Диаграмма Ганта
+*/
+//Категория: Скрипты для встроенного приложения
+
+
+
+//МЕТОДЫ---------------------------------------------------------------
+
+/**
+ * Логирует сообщение
+ * @param msg сообщение
+ * @param level уровень логирования
+ * @param exception исключение (для отображения стектрейса)
+ */
+def log(def msg, def level = 'info', def exception = null)
+{
+    logger."$level"("BPA-702> $msg", exception)
+}
+
+/**
+ * Получение значения по коду из requestContent
+ * @param requestContent запрос c параметрами
+ * @param code из request
+ * @param toLower указывает, нужно ли преобразовать значение к нижнему регистру перед возвратом
+ */
+def getSafe(def requestContent, def code, def toLower = false){
+  def value = null;
+  if(requestContent.containsKey(code)){
+    value = requestContent.get(code);
+    if(value && value instanceof String && toLower){
+      value = value.toLowerCase();
+    }
+  }
+  return value;
+}
+
+
+/**
+ * Возвращает все ЗНИ по переданному в requestContent параметру 'days'
+ * @param requestContent запрос c параметрами
+ */
+def dataServiceCallChg(def requestContent){
+  def daysCode = getSafe(requestContent, 'days');
+  
+  if(daysCode != null){    
+    def date = utils.formatters.strToDate(daysCode);
+    
+        // Определение начала дня
+    Calendar calStart = Calendar.getInstance();
+    calStart.setTime(date);
+    calStart.set(Calendar.HOUR_OF_DAY, 0);
+    calStart.set(Calendar.MINUTE, 0);
+    calStart.set(Calendar.SECOND, 0);
+    calStart.set(Calendar.MILLISECOND, 0);
+    def startOfDay = calStart.getTime();
+    
+    // Определение конца дня
+    Calendar calEnd = Calendar.getInstance();
+    calEnd.setTime(date);
+    calEnd.set(Calendar.HOUR_OF_DAY, 23);
+    calEnd.set(Calendar.MINUTE, 59);
+    calEnd.set(Calendar.SECOND, 59);
+    calEnd.set(Calendar.MILLISECOND, 999);
+    def endOfDay = calEnd.getTime();
+    
+    def chgHQL = api.db.query("""
+        SELECT cast(chg.id AS string) as id, chg.title as name, chg.state as state, 
+        chg.dateStartWork as dateStart, chg.dateEndWork as dateEnd, priority.title.ru as priority,
+        chg.theme as theme, techDirections.title as techDirections, techCenters.title as techCenter
+        FROM serviceCall\$chg chg
+        LEFT JOIN chg.techDirections techDirections
+        LEFT JOIN chg.techCenters techCenters
+        LEFT JOIN chg.urgency priority
+        WHERE (chg.dateStartWork <= :endOfDay AND chg.dateEndWork >= :startOfDay)
+        ORDER BY chg.registrationDate DESC
+    """)
+    .set('startOfDay', startOfDay)
+    .set('endOfDay', endOfDay)
+    .hq.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE).list();
+    
+    return groovy.json.JsonOutput.toJson(chgHQL);  
+  }else{
+    return groovy.json.JsonOutput.toJson('exeption');  
+  }
+}
+
+```
+
 ## Возможные улучшения
 1. Выгрузка в Excel/PDF
 2. Интеграция с календарями
@@ -70,7 +168,7 @@
 ![photo_2024-04-04_13-06-30](https://github.com/user-attachments/assets/1c689dd5-d04c-441c-b91e-0f44d089d29e)
 
 
-## Пример формата задачи
+## Пример формата получения данных от Naumen Service Desk
 
 ```json
 {
