@@ -1,4 +1,4 @@
-# Gantt Chart Integration with Naumen Service Desk
+# Интеграция диграммы Ганта (DHTMLX Gantt) с Naumen Service Desk
 
 ## Описание проекта 
 
